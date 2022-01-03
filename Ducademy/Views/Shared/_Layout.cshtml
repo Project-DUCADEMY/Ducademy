@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>@ViewData["Title"] - Ducademy</title>
+
+    <link rel="stylesheet" href="/css/layout.css">
+    @await RenderSectionAsync("Designs", required: false)
+</head>
+
+<body>
+    <header>
+        <a href="">
+            <div class="ducami-main-bar1">당신의 관심, 전문분야를 선택해 프로필을 완성하세요 >></div>
+        </a>
+        <div class="ducami-main-bar2">
+            <div class="ducami-main-list">
+                <a href="" class="ducami-main-bar2-logo">
+                    <div>DUCADEMY</div>
+                </a>
+                <div class="ducami-main-learningData">수업자료</div>
+                <div class="ducami-main-classSchedule">함께하기</div>
+                <div class="ducami-main-onlineClass">실시간 수업</div>
+                <!--<div class="ducami-main-senior">선배 리스트</div>-->
+
+                <div class="ducami-main-senior">
+                <a asp-area="" asp-controller="sign" asp-action="Signout">
+                     로그아웃   
+                </a>
+                </div>
+            </div>
+            <div class="ducami-main-memberdata">
+                <div class="ducami-main-profile">
+                    <img src="../imgs/profile1.png" alt="profileImg">
+                </div>
+                <div class="ducami-main-chatting">
+                    <img src="../imgs/chatting1.png" alt="chattingImg">
+                    <span class="ducami-main-chatting-alarm">1</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    @RenderBody()
+
+    <footer>
+        <div class="ducami-main-footer-base"></div>
+        <div class="ducami-main-footer-content">
+            <div class="ducami-main-footer-left"></div>
+            <div class="ducami-main-footer-center"></div>
+            <div class="ducami-main-footer-right"></div>
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
