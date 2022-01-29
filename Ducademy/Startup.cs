@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Ducademy.Database;
+using Ducademy.Hubs;
 
 namespace Ducademy
 {
     public class Startup
     {
+
         [Obsolete]
         public Startup(IConfiguration configuration)
         {
@@ -18,6 +20,7 @@ namespace Ducademy
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddSignalR();
 
             services.Add(new ServiceDescriptor(typeof(UserQurey), new UserQurey(
                 Configuration.GetConnectionString("DefaultConnection"))));
@@ -55,6 +58,8 @@ namespace Ducademy
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapHub<Debuggerhub>("/debuggerhub");
             });
 
 

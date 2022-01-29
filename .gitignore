@@ -351,3 +351,6 @@ MigrationBackup/
 
 appsettings.Development.json
 appsettings.json
+
+*pem
+*ppk

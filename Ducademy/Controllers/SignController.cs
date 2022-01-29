@@ -38,7 +38,7 @@ namespace Ducademy.Controllers
                     ClaimTypes.Name, ClaimTypes.Role);
                 identity.AddClaim(new Claim(ClaimTypes.Name, result.ToString(), "Name"));
                 identity.AddClaim(new Claim("LastCheckDateTime", DateTime.UtcNow.ToString("yyyyMMddHHmmss")));
-                identity.AddClaim(new Claim("Id", result.ToString()));
+                identity.AddClaim(new Claim("id", result.ToString()));
 
                 Console.WriteLine("Login Sucess " + result);
                 var principal = new ClaimsPrincipal(identity);

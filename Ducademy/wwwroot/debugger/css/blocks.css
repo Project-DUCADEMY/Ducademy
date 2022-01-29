@@ -1,0 +1,63 @@
+.data-type{
+    height: 30px;
+    width: 30px;
+    border-width: 0.1cm;
+    border-style: solid;
+    border-color: darkslategray;
+}
+.int{
+    background-color: blueviolet;
+}
+textarea{
+    resize: none;
+    width: 80%;
+    height: 700px;
+}
+canvas{
+    position: relative;
+    left: 40px;
+    background-color: darkslategrey;
+    width: 25%;
+    height: 700px;
+}
+.run_button{
+    z-index: -1;
+}
+.code{
+    margin: 10%;
+    margin-top: 0%;
+    position: relative;
+
+    resize: none;
+    width: 25%;
+    height: 700px;
+    z-index: 100;
+}
+.pointer {
+    position: relative;
+    left: -30px;
+    top: -20px;
+    margin: 0px;
+    width: 0px;
+    height: 0px;
+    border-left: 12px solid red;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+}
+
+.line{
+    margin: 0px;
+    width: 300px;
+    height: 20px;
+}
+
+.parent {
+    display: flex;
+}
+.child {
+    flex: 1;
+}
+.test{
+    position: relative;
+
+}

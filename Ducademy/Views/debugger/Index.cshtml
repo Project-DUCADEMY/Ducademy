@@ -1,0 +1,26 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Home Page";
+}
+@section Designs{
+    <link rel="stylesheet" href="~/debugger/css/blocks.css" type="text/css"/>
+}
+@section Scripts {
+    <script src='~/lib/microsoft/signalr/dist/browser/signalr.js'></script>
+    <script src='~/debugger/js/grapic.js'></script>
+    <script src='~/debugger/js/communication.js'></script>
+}
+<section>
+ <div class="parent" style="background: #585858;">
+        <div class="child" style="height: 100%; background: #2E9AFE;">
+            <textarea class="textarea" resize="none"></textarea>
+	        <button class="run_button">Run</button>
+        </div>
+        <div class="child" style="background: #d1bdbd;">
+            <div class="code"></div>
+        </div>
+        <div class="child stackframe" style="background: #aadbaa;">
+        </div>
+    </div>	 
+</section>
+<textarea style="display:none" id='userid'>@User.FindFirst("id").Value</textarea>
