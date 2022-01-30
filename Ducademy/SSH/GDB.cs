@@ -114,9 +114,10 @@ namespace Ducademy.SSH
         }
 
         private SshClient client;
+        private SftpClient sftp;
         private Dictionary<int, ShellStream> shellStreams = new();
 
-        private ShellStream FindShellAsId(int userid)
+        public ShellStream FindShellAsId(int userid)
         {
             if(shellStreams.ContainsKey(userid))
             {
@@ -264,23 +265,24 @@ namespace Ducademy.SSH
         }
         public string SendCode(int _userid, string _code)
         {
-            string ret;
             try
             {
-                string befDir = Directory.GetCurrentDirectory();
-                Directory.SetCurrentDirectory(befDir + "\\SSH\\usercode");
+                Directory.SetCurrentDirectory(Dirpaths.UsercodeDir);
                 StreamWriter sw = new StreamWriter(File.Create($"{_userid}.c"));
                 sw.Write(_code);
                 sw.Close();
-                ret = ExecuteCmd($"scp -i .\\ducamijjang.pem .\\{_userid}.c ec2-user@ec2-13-209-96-128.ap-northeast-2.compute.amazonaws.com:~/usercode");
-                Directory.SetCurrentDirectory(befDir);
+                using (var infile = File.Open($"{_userid}.c", FileMode.Open))
+                {
+                    sftp.UploadFile(infile, $"./usercode/{_userid}.c");
+                }
+                Directory.SetCurrentDirectory(Dirpaths.RootDir);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return ex.Message;
             }
-            return ret;
+            return "OK";
         }
         public string StartGDB(int _userid)
         {
@@ -304,16 +306,19 @@ namespace Ducademy.SSH
         }
         public GDB(string dir)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.WriteLine(File.Exists(dir) ? "NO" :"SEX");
             PrivateKeyFile privateKey = new(dir);
             client = new SshClient("ec2-13-209-96-128.ap-northeast-2.compute.amazonaws.com", "ec2-user", privateKey);
+            sftp = new SftpClient("ec2-13-209-96-128.ap-northeast-2.compute.amazonaws.com", "ec2-user", privateKey);
             client.Connect();
+            sftp.Connect();
             //shell = client.CreateShell(Console.OpenStandardInput(), Console.OpenStandardOutput(), Console.OpenStandardOutput());
             //shell.Start();
         }
         ~GDB()
         {
             client.Disconnect();
+            sftp.Disconnect();
         }
 
     }

@@ -30,7 +30,7 @@ document.querySelector('.run_button').addEventListener('click', () => {
         codearea.appendChild(tag)
         dom_codes[idx] = tag
     })
-
+    document.querySelector('.run_button').disabled = true;
 })
 
 

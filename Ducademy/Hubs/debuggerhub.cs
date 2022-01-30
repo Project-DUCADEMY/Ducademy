@@ -7,7 +7,8 @@ namespace Ducademy.Hubs
 {
     public class Debuggerhub : Hub
     {
-        private static GDB gdb = new("D:\\Ducademy\\ducamijjang.pem");
+        //private static GDB gdb = new(Directory.GetCurrentDirectory() + "\\Secret\\ducamiJJang.pem");
+        private static GDB gdb = new(Dirpaths.SSHpemFile);
 
         public async Task StartMessage(int _userid)
         {
@@ -16,7 +17,10 @@ namespace Ducademy.Hubs
                 await Clients.Caller.SendAsync("ReceiveMessage", "Error", "Occur");
                 return;
             }
-                
+            if(gdb.FindShellAsId(_userid) != null)
+            {
+                gdb.RemoveShell(_userid);
+            }
             try { gdb.NewShell(_userid); }
             catch (Exception ex) { Console.WriteLine(ex.Message); return; }
             await Clients.Caller.SendAsync("ReceiveMessage", "ad", "ad");

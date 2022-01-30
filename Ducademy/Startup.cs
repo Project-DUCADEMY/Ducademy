@@ -19,6 +19,7 @@ namespace Ducademy
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddControllersWithViews();
             services.AddSignalR();
 
@@ -36,7 +37,7 @@ namespace Ducademy
             });
 
         }
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
 
             if (env.IsDevelopment())
@@ -61,7 +62,6 @@ namespace Ducademy
 
                 endpoints.MapHub<Debuggerhub>("/debuggerhub");
             });
-
 
         }
     }

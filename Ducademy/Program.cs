@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore;
 using Ducademy.SSH;
+using Ducademy.Secret;
 
 namespace Ducademy
 {
@@ -8,6 +9,7 @@ namespace Ducademy
         
         public static void Main(string[] args)
         {
+            DefaultSetting defaultSetting = new();
             CreateWebHostBuilder(args).Build().Run();
         }
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
@@ -15,6 +17,7 @@ namespace Ducademy
             return WebHost.CreateDefaultBuilder(args)
                     .UseStartup<Startup>();
         }
+
     }
 }
 

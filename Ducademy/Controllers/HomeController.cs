@@ -7,17 +7,19 @@ namespace Ducademy.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILoggerFactory loggerFactory)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<HomeController>();
         }
+
 
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
             {
+                Console.WriteLine("Program Start");
                 return View();
             }
             else
