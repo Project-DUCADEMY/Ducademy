@@ -18,7 +18,10 @@ namespace Ducademy.Controllers
         {
             return View();
         }
-
+        public IActionResult Codeditor()
+        {
+            return View("Codeditor");
+        }
 
     }
 }

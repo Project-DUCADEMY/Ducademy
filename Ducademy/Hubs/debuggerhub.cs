@@ -14,7 +14,7 @@ namespace Ducademy.Hubs
         {
             if (Int32.Parse(Context.User.FindFirst("id").Value) != _userid)
             {
-                await Clients.Caller.SendAsync("ReceiveMessage", "Error", "Occur");
+                await Clients.Caller.SendAsync("ReceiveMessage", "Error Occur");
                 return;
             }
             if(gdb.FindShellAsId(_userid) != null)
@@ -23,7 +23,7 @@ namespace Ducademy.Hubs
             }
             try { gdb.NewShell(_userid); }
             catch (Exception ex) { Console.WriteLine(ex.Message); return; }
-            await Clients.Caller.SendAsync("ReceiveMessage", "ad", "ad");
+            await Clients.Caller.SendAsync("ReceiveMessage", "We are Connected");
         }
 
 
@@ -41,7 +41,6 @@ namespace Ducademy.Hubs
         public async Task ExecuteGdbCmd(string _command)
         {
             string str = gdb.ExecuteGDBCmd(Int32.Parse(Context.User.FindFirst("id").Value), _command);
-            //str = str[_command.Length..^str.FirstIndexOf(' ')];
             str = str.Substring(_command.Length, 3);
             await Clients.Caller.SendAsync("StackDatas",
                 str,

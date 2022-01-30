@@ -1,7 +1,6 @@
 let myid = document.querySelector('#userid').value
 let connection = new signalR.HubConnectionBuilder().withUrl("/debuggerhub").build();
 
-
 connection.start().then(() => {
     connection.invoke('StartMessage', myid*1).catch(function (err) {
         return console.error(err.toString());
@@ -9,20 +8,23 @@ connection.start().then(() => {
 }).catch(function (err) {
     return console.error(err.toString());
 });
+
 connection.onclose(e =>{
-    alert('close connnection')
+    //alert('close connnection')
+    document.querySelector('.run_button').disabled = true
 })
+
 connection.on('ReceiveMessage',(message) => {
     console.log(message)
 });
+
 connection.on('StackDatas',(now, message) => {
-    console.log(now)
-    dom_codes[now * 1 - 1].appendChild(pointer)
+    drawPointer(now)
     drawAllStackFrame(message.split('\n'))
 });
 
-document.querySelector('.run_button').addEventListener('click', () => {
-    connection.invoke('RunCode', textarea.value).catch(function (err) {
+document.querySelector('.editor__run').addEventListener('click', () => {
+    connection.invoke('RunCode', codeEditor.getValue()).catch(function (err) {
         return console.error(err.toString());
     });
 })

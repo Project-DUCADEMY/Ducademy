@@ -355,3 +355,4 @@ appsettings.json
 *pem
 *ppk
 Secret/
+CacheFolder

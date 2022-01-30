@@ -291,8 +291,8 @@ namespace Ducademy.SSH
                 ShellStream shellStream = FindShellAsId(_userid);
                 StreamReader streamReader = new(shellStream);
                 streamReader.ReadToEnd();
-                RunShellCode(shellStream, $"gcc -o {_userid}execute {_userid}.c -g\n", "$");
-                RunShellCode(shellStream, $"gdb {_userid}execute\n", "(gdb)");
+                RunShellCode(shellStream, $"gcc -o {_userid}execute.out {_userid}.c -g\n", "$");
+                RunShellCode(shellStream, $"gdb {_userid}execute.out\n", "(gdb)");
                 RunShellCode(shellStream, "set output-radix 16\n", "(gdb)");
                 string result = RunShellCode(shellStream, "break main\n", "(gdb)")[12..^6]; 
                 RunShellCode(shellStream, "run\n", "(gdb)");

@@ -19,7 +19,6 @@ namespace Ducademy.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                Console.WriteLine("Program Start");
                 return View();
             }
             else

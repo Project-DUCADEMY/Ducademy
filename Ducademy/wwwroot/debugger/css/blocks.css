@@ -59,5 +59,20 @@ canvas{
 }
 .test{
     position: relative;
+}
+
+.default_flex {
+    flex: 1;
+}
+.code_section{
+    flex: 6;
+
+}
+.variables_section {
+    flex: 2;
+
+}
+.console_section {
+    flex: 2;
 
 }

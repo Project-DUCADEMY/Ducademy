@@ -2,25 +2,49 @@
     Layout = "_Layout";
     ViewData["Title"] = "Home Page";
 }
-@section Designs{
+@section Designs {
     <link rel="stylesheet" href="~/debugger/css/blocks.css" type="text/css"/>
+    <link rel="stylesheet" href="~/code-editor/css/editor-styles.css">
 }
 @section Scripts {
+    <script src="~/code-editor/js/ace-editor/src-min/ace.js"></script>
+    <script src="~/code-editor/js/ace-editor/src-min/mode-javascript.js"></script>
+    <script src="~/code-editor/js/ace-editor/src-min/ext-language_tools.js"></script>
+
+    <script src="~/code-editor/js/editor.js"></script>
+    <script src="~/code-editor/js/editor-console.js"></script>
+
     <script src='~/lib/microsoft/signalr/dist/browser/signalr.js'></script>
-    <script src='~/debugger/js/grapic.js'></script>
+    <script src='~/debugger/js/grapics.js'></script>
     <script src='~/debugger/js/communication.js'></script>
 }
-<section>
- <div class="parent" style="background: #585858;">
-        <div class="child" style="height: 100%; background: #2E9AFE;">
-            <textarea class="textarea" resize="none"></textarea>
-	        <button class="run_button">Run</button>
+<div class="parent" style="background: #585858; height: 100%; width: 100%">
+    <div class="code_section" style="height: 100%; width: 100%; background: #2E9AFE;">
+        <div class="editor">
+            <div class="editor__wrapper">
+                <div class="editor__body">
+                    <div id="editorCode" class="editor__code"></div>
+                </div>
+                <div class="editor__footer">
+                    <div class="editor__footer--left">
+                        <button class="editor__btn editor__run">Run ></button>
+                        <button class="editor__btn editor__reset">Reset ></button>
+                    </div>
+                    <div class="editor__footer--right">
+                        <div class="editor__console">
+                            <ul class="editor__console-logs"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="child" style="background: #d1bdbd;">
-            <div class="code"></div>
-        </div>
-        <div class="child stackframe" style="background: #aadbaa;">
-        </div>
-    </div>	 
-</section>
+	    <!--<button class="run_button">Run</button>-->
+    </div>
+
+    <div class="variables_section" style="background: #d1bdbd;">
+        <div class="code"></div>
+    </div>
+    <div class="console_section stackframe" style="background: #aadbaa;">
+    </div>
+</div>
 <textarea style="display:none" id='userid'>@User.FindFirst("id").Value</textarea>
