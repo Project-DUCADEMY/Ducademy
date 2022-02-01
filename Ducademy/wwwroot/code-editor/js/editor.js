@@ -5,12 +5,12 @@ const resetCodeBtn = document.querySelector('.editor__reset');
 
 // Setup Ace
 let codeEditor = ace.edit("editorCode");
-let defaultCode = '#include <stdio.h>\nint main()\n{\n\tprintf("Hello World!");\n}';
+let defaultCode = '#include <stdio.h>\nint main()\n{\n\tprintf("Hello World!\\n");\n}';
 let consoleMessages = [];
 
 let editorLib = {
     clearConsoleScreen() {
-        consoleMessages.length = 0;
+        // consoleMessages.length = 0;
 
         // Remove all elements in the log list
         while (consoleLogList.firstChild) {
@@ -22,11 +22,10 @@ let editorLib = {
             const newLogItem = document.createElement('li');
             const newLogText = document.createElement('pre');
 
-            newLogText.className = log.class;
-            newLogText.textContent = `> ${log.message}`;
+            newLogText.className = `log log--string`;
+            newLogText.textContent = `> ${log}`;
 
             newLogItem.appendChild(newLogText);
-
             consoleLogList.appendChild(newLogItem);
         })
     },

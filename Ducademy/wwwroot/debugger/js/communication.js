@@ -23,6 +23,13 @@ connection.on('StackDatas',(now, message) => {
     drawAllStackFrame(message.split('\n'))
 });
 
+connection.on('standardOut', (message) => {
+    consoleMessages.push(message)
+    console.log(consoleMessages)
+    editorLib.clearConsoleScreen()
+    editorLib.printToConsole(message)
+})
+
 document.querySelector('.editor__run').addEventListener('click', () => {
     connection.invoke('RunCode', codeEditor.getValue()).catch(function (err) {
         return console.error(err.toString());

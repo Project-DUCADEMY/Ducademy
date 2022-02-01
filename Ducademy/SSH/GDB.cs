@@ -18,6 +18,8 @@ namespace Ducademy.SSH
                     int indexOfEqual = _str.IndexOf("=");
                     name = _str[..(indexOfEqual - 1)];
                     value = _str[(indexOfEqual + 2)..];
+
+
                 }
                 public string name;
                 public string value;
@@ -60,7 +62,7 @@ namespace Ducademy.SSH
                     case "unsigned long long":
                         defaultSize = 8; break;
                     default:
-                        throw new Exception("Unknown DataType");
+                        throw new Exception($"Unknown DataType {_type}");
                 }
 
                 if (arrLocation == -1)
@@ -82,8 +84,9 @@ namespace Ducademy.SSH
                 name = nameNVal.name;
                 string shellCommand = $"ptype {name}\n";
                 datatype = RunShellCode(_shell, shellCommand, "(gdb)");
+                Console.WriteLine(datatype);
                 datatype = datatype.Substring(shellCommand.Length + 8, datatype.LastIndexOf("\r\n") - (shellCommand.Length + 8));
-                datasize = SizeOfType(datatype);
+                try { datasize = SizeOfType(datatype); }catch (Exception ex) { Console.WriteLine(ex.Message); }
                 data = new byte[datasize];
                 if (nameNVal.value[0] == '{')
                 {
@@ -115,6 +118,7 @@ namespace Ducademy.SSH
 
         private SshClient client;
         private SftpClient sftp;
+
         private Dictionary<int, ShellStream> shellStreams = new();
 
         public ShellStream FindShellAsId(int userid)
@@ -175,13 +179,13 @@ namespace Ducademy.SSH
             {
                 ShellStream shellStream = client.CreateShellStream("", 80, 24, 800, 600, 1024, new Dictionary<TerminalModes, uint>());
                 shellStreams.Add(userid, shellStream);
-                RunShellCode(shellStream, "cd usercode\n");
+                RunShellCode(shellStream, "cd usercode\n", "$");
                 return shellStream;
             } 
         }
-        public bool RemoveShell(int userid)
+        public bool RemoveShell(int _userid)
         {
-            return shellStreams.Remove(userid);
+            return shellStreams.Remove(_userid);
         }
         private static string RunShellCode(ShellStream _stream, string _code)
         {
@@ -233,21 +237,38 @@ namespace Ducademy.SSH
                 return ex.ToString();
             }
         }
+        private static int RemoveRemainBuf(ShellStream _stream)
+        {
+            try
+            {
+                StreamReader streamReader = new(_stream);
+                return streamReader.ReadToEnd().Length;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.ToString());
+                return -1;
+            }
+        }
         public LinkedList<string> AllStackVarables(int _userid)
         {
             LinkedList<string> result = new();
             LinkedList<ClangData> list = new();
             ShellStream shell = FindShellAsId(_userid);
-            string str = RunShellCode(shell, "info args\n", "(gdb)")[("info args\n\r".Length)..^6];
+            //RemoveRemainBuf(shell);
+            string str = RunShellCode(shell, "info args\n", "(gdb)")[("info args\n\r".Length)..11];
+            Console.WriteLine(str);
             foreach (var item in str.Split("\r\n"))
             {
                 if (item == "" || item == "No arguments.") { break; }
                 list.AddLast(new ClangData(shell, item));
             }
-            str = RunShellCode(shell, "info locals\n", "(gdb)")[("info locals\n\r".Length)..^6];
+            str = RunShellCode(shell, "info locals\n", "(gdb)");
+            str = str[("info locals".Length)..^6];
             foreach (var item in str.Split("\r\n"))
             {
-                if(item == "" || item == "No locals.") {  break; }
+                if(item == "" || item == "No arguments.") {  break; }
                 list.AddLast(new ClangData(shell, item));
             }
 
@@ -261,7 +282,9 @@ namespace Ducademy.SSH
         }
         public string ExecuteGDBCmd(int _userid, string command)
         {
-            return RunShellCode(FindShellAsId(_userid), command, "(gdb)");
+            ShellStream shellStream = FindShellAsId(_userid);
+            RemoveRemainBuf(shellStream);
+            return RunShellCode(shellStream, command, "(gdb)");
         }
         public string SendCode(int _userid, string _code)
         {
@@ -289,12 +312,17 @@ namespace Ducademy.SSH
             try
             {
                 ShellStream shellStream = FindShellAsId(_userid);
-                StreamReader streamReader = new(shellStream);
-                streamReader.ReadToEnd();
+                ShellStream ioShellStream = FindShellAsId(_userid << 8);
+                RemoveRemainBuf(shellStream);
+                RemoveRemainBuf(ioShellStream);
+
+                string tty = RunShellCode(ioShellStream, "tty\n", "$")[5..];
+
                 RunShellCode(shellStream, $"gcc -o {_userid}execute.out {_userid}.c -g\n", "$");
                 RunShellCode(shellStream, $"gdb {_userid}execute.out\n", "(gdb)");
                 RunShellCode(shellStream, "set output-radix 16\n", "(gdb)");
                 string result = RunShellCode(shellStream, "break main\n", "(gdb)")[12..^6]; 
+                RunShellCode(shellStream, "tty " + tty[..tty.IndexOf('\n')] + '\n', "(gdb)");
                 RunShellCode(shellStream, "run\n", "(gdb)");
                 return result;
             }
@@ -306,7 +334,6 @@ namespace Ducademy.SSH
         }
         public GDB(string dir)
         {
-            Console.WriteLine(File.Exists(dir) ? "NO" :"SEX");
             PrivateKeyFile privateKey = new(dir);
             client = new SshClient("ec2-13-209-96-128.ap-northeast-2.compute.amazonaws.com", "ec2-user", privateKey);
             sftp = new SftpClient("ec2-13-209-96-128.ap-northeast-2.compute.amazonaws.com", "ec2-user", privateKey);

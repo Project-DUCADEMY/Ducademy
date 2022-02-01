@@ -20,8 +20,12 @@ namespace Ducademy.Hubs
             if(gdb.FindShellAsId(_userid) != null)
             {
                 gdb.RemoveShell(_userid);
+                gdb.RemoveShell(_userid << 8);
             }
-            try { gdb.NewShell(_userid); }
+            try { 
+                gdb.NewShell(_userid); //기본적인 통신용 쉘
+                gdb.NewShell(_userid << 8); //tty이용해 프로그램 입출력을 위한 쉘 
+            }
             catch (Exception ex) { Console.WriteLine(ex.Message); return; }
             await Clients.Caller.SendAsync("ReceiveMessage", "We are Connected");
         }
@@ -45,6 +49,13 @@ namespace Ducademy.Hubs
             await Clients.Caller.SendAsync("StackDatas",
                 str,
                 string.Join('\n', gdb.AllStackVarables(Int32.Parse(Context.User.FindFirst("id").Value))));
+
+            StreamReader sr = new StreamReader(gdb.FindShellAsId(Int32.Parse(Context.User.FindFirst("id").Value) << 8));
+            string strng = sr.ReadToEnd();
+            if (strng != "")
+            {
+                await Clients.Caller.SendAsync("standardOut", strng);
+            }
         }
 
         public override Task OnDisconnectedAsync(Exception? exception)

@@ -1,4 +1,5 @@
 // let console = (function (oldConsole) {
+//     this.oldConsole = oldConsole
 //     return {
 //         formatArgsOutput: function(arg) { 
 //             let outputArgMessage;
@@ -35,7 +36,7 @@
 
 //             // Deal with multiple arguments
 //             arguments.forEach(arg => {
-//                 currentLog += this.formatArgsOutput(arg) + " ";
+//                 currentLog += this.formatArgsOutput(arg);
 //             });
 
 //             oldConsole.log.apply(oldConsole, arguments);
@@ -50,10 +51,9 @@
 //         logSingleArgument: function (logItem) {
 //             oldConsole.log(logItem);
 //             consoleMessages.push({
-//                 message: this.formatArgsOutput(logItem),
+//                 message: logItem,
 //                 class: `log log--${this.getType(logItem)}`
-//             });
-
+//             })
 //             oldConsole.log(consoleMessages);
 //         },
 //         log: function (text) {
@@ -75,3 +75,5 @@
 //         }
 //     }
 // })(window.console);
+
+
