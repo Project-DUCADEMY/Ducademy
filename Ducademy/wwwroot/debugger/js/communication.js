@@ -19,6 +19,7 @@ connection.on('ReceiveMessage',(message) => {
 });
 
 connection.on('StackDatas',(now, message) => {
+    console.log(now)
     drawPointer(now)
     drawAllStackFrame(message.split('\n'))
 });

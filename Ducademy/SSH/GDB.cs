@@ -18,8 +18,6 @@ namespace Ducademy.SSH
                     int indexOfEqual = _str.IndexOf("=");
                     name = _str[..(indexOfEqual - 1)];
                     value = _str[(indexOfEqual + 2)..];
-
-
                 }
                 public string name;
                 public string value;
@@ -84,7 +82,6 @@ namespace Ducademy.SSH
                 name = nameNVal.name;
                 string shellCommand = $"ptype {name}\n";
                 datatype = RunShellCode(_shell, shellCommand, "(gdb)");
-                Console.WriteLine(datatype);
                 datatype = datatype.Substring(shellCommand.Length + 8, datatype.LastIndexOf("\r\n") - (shellCommand.Length + 8));
                 try { datasize = SizeOfType(datatype); }catch (Exception ex) { Console.WriteLine(ex.Message); }
                 data = new byte[datasize];
@@ -214,6 +211,8 @@ namespace Ducademy.SSH
         }
         private static string RunShellCode(ShellStream _stream, string _code, string _waitFor)
         {
+            if (_code[_code.Length - 1] != '\n')
+                Console.WriteLine(_code);
             try
             {
                 WriteStream(_stream, _code);
@@ -256,19 +255,20 @@ namespace Ducademy.SSH
             LinkedList<string> result = new();
             LinkedList<ClangData> list = new();
             ShellStream shell = FindShellAsId(_userid);
-            //RemoveRemainBuf(shell);
-            string str = RunShellCode(shell, "info args\n", "(gdb)")[("info args\n\r".Length)..11];
-            Console.WriteLine(str);
+            RemoveRemainBuf(shell);
+            string str = RunShellCode(shell, "info args\n", "(gdb)");
+            str = str[("info args\n\r".Length)..11];
             foreach (var item in str.Split("\r\n"))
             {
                 if (item == "" || item == "No arguments.") { break; }
                 list.AddLast(new ClangData(shell, item));
             }
             str = RunShellCode(shell, "info locals\n", "(gdb)");
-            str = str[("info locals".Length)..^6];
+            str = str[("info locals".Length)..^7];
             foreach (var item in str.Split("\r\n"))
             {
-                if(item == "" || item == "No arguments.") {  break; }
+                if(item == "No locals.") {  break; }
+                else if(item == "") { continue; }
                 list.AddLast(new ClangData(shell, item));
             }
 
@@ -322,7 +322,7 @@ namespace Ducademy.SSH
                 RunShellCode(shellStream, $"gdb {_userid}execute.out\n", "(gdb)");
                 RunShellCode(shellStream, "set output-radix 16\n", "(gdb)");
                 string result = RunShellCode(shellStream, "break main\n", "(gdb)")[12..^6]; 
-                RunShellCode(shellStream, "tty " + tty[..tty.IndexOf('\n')] + '\n', "(gdb)");
+                RunShellCode(shellStream, "tty " + tty[..(tty.IndexOf('\n') - 1)] + '\n', "(gdb)");
                 RunShellCode(shellStream, "run\n", "(gdb)");
                 return result;
             }

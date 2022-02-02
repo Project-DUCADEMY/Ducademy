@@ -40,6 +40,8 @@ namespace Ducademy.Hubs
             await Clients.Caller.SendAsync("StackDatas",
                 str.Split(' ')[0],
                 string.Join('\n', gdb.AllStackVarables(userid)));
+            StreamReader sr = new StreamReader(gdb.FindShellAsId(Int32.Parse(Context.User.FindFirst("id").Value) << 8));
+            string strng = sr.ReadToEnd();
         }
 
         public async Task ExecuteGdbCmd(string _command)
