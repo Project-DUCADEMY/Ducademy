@@ -12,6 +12,7 @@ namespace Ducademy.Hubs
 
         public async Task StartMessage(int _userid)
         {
+            gdb.Reconnect();
             if (Int32.Parse(Context.User.FindFirst("id").Value) != _userid)
             {
                 await Clients.Caller.SendAsync("ReceiveMessage", "Error Occur");
@@ -29,8 +30,6 @@ namespace Ducademy.Hubs
             catch (Exception ex) { Console.WriteLine(ex.Message); return; }
             await Clients.Caller.SendAsync("ReceiveMessage", "We are Connected");
         }
-
-
         public async Task RunCode(string _code)
         {
             int userid = Int32.Parse(Context.User.FindFirst("id").Value);

@@ -112,12 +112,30 @@ namespace Ducademy.SSH
             public string name;
             public byte[] data;
         }
-
         private SshClient client;
         private SftpClient sftp;
-
+        private readonly string keyDirectory;
         private Dictionary<int, ShellStream> shellStreams = new();
 
+        public bool Reconnect()
+        {
+            bool retVal = false;
+            if(client.IsConnected == false)
+            {
+                client.Connect();
+                retVal = true;
+            }
+            if(sftp.IsConnected == false)
+            {
+                sftp.Connect();
+                retVal = true;
+            }
+            foreach(int key in shellStreams.Keys)
+            {
+                RemoveShell(key);
+            }
+            return retVal;
+        }
         public ShellStream FindShellAsId(int userid)
         {
             if(shellStreams.ContainsKey(userid))
@@ -257,27 +275,42 @@ namespace Ducademy.SSH
             ShellStream shell = FindShellAsId(_userid);
             RemoveRemainBuf(shell);
             string str = RunShellCode(shell, "info args\n", "(gdb)");
-            str = str[("info args\n\r".Length)..11];
-            foreach (var item in str.Split("\r\n"))
+            str = str[("info args\n\r".Length)..^8];
+            if(str != "No arguments.")
             {
-                if (item == "" || item == "No arguments.") { break; }
-                list.AddLast(new ClangData(shell, item));
+                foreach (var item in str.Split("\r\n"))
+                {
+                    try
+                    {
+                        list.AddLast(new ClangData(shell, item));
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine($"{item}:{ex.Message}");
+                    }   
+                }
             }
             str = RunShellCode(shell, "info locals\n", "(gdb)");
-            str = str[("info locals".Length)..^7];
-            foreach (var item in str.Split("\r\n"))
+            str = str[("info locals\r\n".Length)..^8];
+            if (str != "No locals.")
             {
-                if(item == "No locals.") {  break; }
-                else if(item == "") { continue; }
-                list.AddLast(new ClangData(shell, item));
+                foreach (var item in str.Split("\r\n"))
+                {
+                    try
+                    {
+                        list.AddLast(new ClangData(shell, item));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"{item}:{ex.Message}");
+                    }
+                }
             }
-
             foreach(var clangData in list)
             {
                 string tempStr = $"{clangData.datatype}/{clangData.name}/{BitConverter.ToString(clangData.data)}";
                 result.AddLast(tempStr);
             }
-
             return result;
         }
         public string ExecuteGDBCmd(int _userid, string command)
@@ -334,7 +367,8 @@ namespace Ducademy.SSH
         }
         public GDB(string dir)
         {
-            PrivateKeyFile privateKey = new(dir);
+            keyDirectory = dir;
+            PrivateKeyFile privateKey = new(keyDirectory);
             client = new SshClient("ec2-13-209-96-128.ap-northeast-2.compute.amazonaws.com", "ec2-user", privateKey);
             sftp = new SftpClient("ec2-13-209-96-128.ap-northeast-2.compute.amazonaws.com", "ec2-user", privateKey);
             client.Connect();

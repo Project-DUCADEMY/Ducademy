@@ -30,8 +30,9 @@ connection.on('standardOut', (message) => {
     editorLib.clearConsoleScreen()
     editorLib.printToConsole(message)
 })
-
+console.log(document.querySelector('.editor__run'))
 document.querySelector('.editor__run').addEventListener('click', () => {
+    console.log(codeEditor.getValue())
     connection.invoke('RunCode', codeEditor.getValue()).catch(function (err) {
         return console.error(err.toString());
     });
@@ -42,7 +43,3 @@ pointer.addEventListener('click', () => {
         return console.error(err.toString());
     });
 })
-
-// connection.on("logMessage", function (user, message, time) {
-//     insertChating(user, message, timeParser(time))
-// });

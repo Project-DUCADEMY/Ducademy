@@ -34,12 +34,13 @@ html, body {
     flex-direction: column;
     background: var(--editor-bg);
     padding: 2em;
-    border-radius: 3px;
+
     border: 1px solid #ccc;
 }
 
 .editor__body {
     flex: 1;
+    
 }
 
 .editor__footer {
@@ -77,6 +78,7 @@ html, body {
 }
 
 .editor__code {
+    border-radius: 4px;
     position: relative;
     height: 100%;
     width: 100%;

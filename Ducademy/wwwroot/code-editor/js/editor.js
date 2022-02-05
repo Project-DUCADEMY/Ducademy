@@ -5,8 +5,15 @@ const resetCodeBtn = document.querySelector('.editor__reset');
 
 // Setup Ace
 let codeEditor = ace.edit("editorCode");
-let defaultCode = '#include <stdio.h>\nint main()\n{\n\tprintf("Hello World!\\n");\n}';
+const defaultCode = '#include <stdio.h>\nint main()\n{\n\tprintf("Hello World!\\n");\n}';
 let consoleMessages = [];
+let editorSetting = {
+    theme: 'ace/theme/dracula',
+    language: 'ace/mode/c_cpp',
+    fontFamily: 'Consolas',
+    fontSize: 12,
+    code: defaultCode
+}
 
 let editorLib = {
     clearConsoleScreen() {
@@ -29,56 +36,23 @@ let editorLib = {
             consoleLogList.appendChild(newLogItem);
         })
     },
-    init() {
+    init(setting) {
         // Configure Ace
-
         // Theme
-        codeEditor.setTheme("ace/theme/xcode");
+        codeEditor.setTheme(setting.theme);
 
         // Set language
-        codeEditor.session.setMode("ace/mode/c_cpp");
+        codeEditor.session.setMode(setting.language);
 
         // Set Options
         codeEditor.setOptions({
-            fontFamily: 'Inconsolata',
-            fontSize: '12pt',
+            fontFamily: setting.fontFamily,
+            fontSize: `${setting.fontSize}pt`,
             enableBasicAutocompletion: true,
             enableLiveAutocompletion: true,
         });
-
         // Set Default Code
-        codeEditor.setValue(defaultCode);
+        codeEditor.setValue(setting.code);
     }
 }
-
-// Events
-// executeCodeBtn.addEventListener('click', () => {
-//     // // Clear console messages
-//     // editorLib.clearConsoleScreen();
-    
-//     // // Get input from the code editor
-//     // const userCode = codeEditor.getValue();
-
-//     // // Run the user code
-//     // try {
-//     //     new Function(userCode)();
-//     // } catch (err) {
-//     //     console.error(err);
-//     // }
-
-//     // // Print to the console
-//     // editorLib.printToConsole();
-
-//     drawPointer(1)
-// });
-
-// resetCodeBtn.addEventListener('click', () => {
-//     // // Clear ace editor
-//     // codeEditor.setValue(defaultCode);
-
-//     // // Clear console messages
-//     // editorLib.clearConsoleScreen();
-// })
-
-editorLib.init();
-
+editorLib.init(editorSetting);
