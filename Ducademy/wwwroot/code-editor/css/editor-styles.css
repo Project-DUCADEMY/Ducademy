@@ -89,6 +89,18 @@ html, body {
     border: 1px solid var(--editor-border);
 }
 
+.editor__selector {
+    display: inline;
+    position: relative;
+    top: 18px;
+    width: 20%;
+}
+.editor__fontsize_bar {
+    display: inline;
+    position: relative;
+    left: 30%;
+    width: 60%;
+}
 .pointer {
     position: relative;
     left: -15px;

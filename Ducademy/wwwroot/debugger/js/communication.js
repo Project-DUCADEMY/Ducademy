@@ -26,17 +26,36 @@ connection.on('StackDatas',(now, message) => {
 
 connection.on('standardOut', (message) => {
     consoleMessages.push(message)
-    console.log(consoleMessages)
     editorLib.clearConsoleScreen()
     editorLib.printToConsole(message)
 })
-console.log(document.querySelector('.editor__run'))
+
+
 document.querySelector('.editor__run').addEventListener('click', () => {
     console.log(codeEditor.getValue())
     connection.invoke('RunCode', codeEditor.getValue()).catch(function (err) {
         return console.error(err.toString());
     });
 })
+
+function themeChange() {
+    let theme = document.querySelector('.editor__selector').value
+    if(theme === 'default') {
+        editorSetting.theme = `ace/theme/xcode`
+    }
+    else if(theme === 'dark') {
+        editorSetting.theme = `ace/theme/dracula`
+    }
+    editorSetting.code = codeEditor.getValue()
+    editorLib.init(editorSetting)
+}
+
+function fontSizeChange() {
+    editorSetting.fontSize = document.querySelector('.editor__fontsize_bar').value
+    editorSetting.code = codeEditor.getValue()
+    editorLib.init(editorSetting)
+}
+
 
 pointer.addEventListener('click', () => {
     connection.invoke('ExecuteGdbCmd', "next\n").catch(function (err) {

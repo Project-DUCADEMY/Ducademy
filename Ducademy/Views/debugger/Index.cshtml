@@ -11,7 +11,6 @@
     <script src="~/code-editor/js/ace-editor/src-min/mode-javascript.js"></script>
     <script src="~/code-editor/js/ace-editor/src-min/ext-language_tools.js"></script>
 
-    <script src="~/code-editor/js/editor-console.js"></script>
     <script src="~/code-editor/js/editor.js"></script>
 
     <script src='~/lib/microsoft/signalr/dist/browser/signalr.js'></script>
@@ -36,6 +35,12 @@
                         </div>
                     </div>
                 </div>
+                <select class="editor__selector" onchange="themeChange()">
+                  <option value="dark">dark</option>
+                  <option value="default">default</option>
+                </select>
+
+                <input class="editor__fontsize_bar" type="range" value="12" min="6" max="30" onchange="fontSizeChange()">
             </div>
         </div>
 	    <!--<button class="run_button">Run</button>-->
